@@ -1,0 +1,175 @@
+
+<html><head><script>
+
+function validateBoard(col,row, player){
+
+ var win = 0;
+ for (i =7; i>0;i--) {
+	if( board[col][i] == player) win++; 
+		else win= 0;
+	if (win > 3 ) { 
+	return 1;
+	}
+ }
+  var win = 0;
+ for (i =0; i<7;i++) {
+	if( board[i][row] == player) win++; 
+		else win= 0;
+	if (win > 3 ) {
+	return 1;
+	}
+ }
+  var win = 0;
+	for (j =0; j<=7;j++) {
+		var cCol = col-j+3;
+		var cRow = row-j+3;
+		if (checkValidBoard(cCol,cRow)) {
+			//alert (cCol + "X" + cRow);  
+			if(board[cCol][cRow] == player) win++; 
+			else win = 0;
+			if (win > 3 ) { 
+				return 1;
+			}
+		}
+		else {win =0;}
+	}
+	
+	var win = 0;
+	for (j =0; j<=7;j++) {
+		var cCol = col+j-3;
+		var cRow = row-j+3;
+		if (checkValidBoard(cCol,cRow)) {
+			//alert (cCol + "X" + cRow);  
+			if(board[cCol][cRow] == player) win++; 
+			else win = 0;
+			if (win > 3 ) { 
+				return 1;
+			}
+		}
+		else {win =0;}
+	}
+	
+	return 0;
+ }
+ 
+var board = [[], [], [], [], [], [], []];
+var turn = 0;
+var pcPlayer=true;
+
+function columnClick(column) {
+    var td = document.getElementById("mytable").getElementsByTagName("td");
+    var row = computeHighestRow(column, turn%2);
+	if(row > 0) {
+	td[row * 7 + column].style.backgroundColor = playerStyle(turn);          
+	var stat = validateBoard(column,row, turn%2);
+	if (stat == 1) {
+		alert("Player "+playerStyle(turn)+" wins in " + turn+" turn/s");
+		reset();	
+		return;
+	}
+		turn++;
+		
+		if (turn%2 == 1 && pcPlayer) {
+			alert("My turn sir!");
+			columnClick(Math.floor(Math.random() * 7));
+		}
+	
+	}
+	
+}
+
+function reset(){
+	var td = document.getElementById("mytable").getElementsByTagName("td");
+	for(var i=7;i<49;i++){
+		td[i].style.backgroundColor ="white";      
+	}
+		board = [[], [], [], [], [], [], []];
+		turn = 0;
+}
+
+function playerStyle(turn){
+if (turn%2==0) return "green"; 
+else return "red";
+}
+
+function computeHighestRow(column,player){
+	for(i =6; i>0;i--) {
+		if (checkValid(column,i))  {
+			board[column][i] = player;
+			return i;
+		}
+	}
+	return 0;
+}
+
+function checkValid(col,row){
+if (checkValidBoard(col,row))
+  return (board[col][row] != 1 && board[col][row] != 0);
+else return false;
+  }
+
+function checkValidBoard(col, row){
+if (col > 6 || col < 0) return false;
+else if (row > 6 || row < 1) return false;
+else return true;
+}
+
+function toggleMode(){
+if(pcPlayer) {
+	document.getElementById("hbutton").value="Play with EASY AI";
+	document.getElementById("current").innerHTML = "Currently vs. another Player";
+	pcPlayer = false;
+} else 
+{
+	document.getElementById("hbutton").value="Play with Player";
+	document.getElementById("current").innerHTML = "Currently vs. EASY AI";
+	pcPlayer = true;
+}
+reset();
+}
+</script>
+<style>
+table, td {
+   width: 300px;
+   height: 40px;
+   padding: 0;
+   }
+</style>
+ </head><body >
+  <div align="center">   
+    <table id="mytable" width="100%" border="1" cellpadding="2" cellspacing="2" style="background-color: #ffffff;">
+      <tbody><tr>
+      <td align="center"> <input type="button" value="+" onclick="columnClick(0)"> </td>
+	  <td align="center"> <input type="button" value="+" onclick="columnClick(1)"> </td>
+	  <td align="center"> <input type="button" value="+" onclick="columnClick(2)"> </td>
+	  <td align="center"> <input type="button" value="+" onclick="columnClick(3)"> </td>
+	  <td align="center"> <input type="button" value="+" onclick="columnClick(4)"> </td>
+	  <td align="center"> <input type="button" value="+" onclick="columnClick(5)"> </td>
+	  <td align="center" > <input type="button" value="+" onclick="columnClick(6)"> </td>
+      </tr>
+	  <tr>
+      <td>  </td><td>  </td><td>  </td><td>  </td><td>  </td><td>  </td><td>  </td>
+      </tr>
+      <tr>
+      <td>  </td><td>  </td><td>  </td><td>  </td><td>  </td><td>  </td><td>  </td>
+      </tr>
+      <tr>
+      <td>  </td><td>  </td><td>  </td><td>  </td><td>  </td><td>  </td><td>  </td>
+      </tr>
+    <tr>
+      <td>  </td><td>  </td><td>  </td><td>  </td><td>  </td><td>  </td><td>  </td>
+      </tr>
+    <tr>
+      <td>  </td><td>  </td><td>  </td><td>  </td><td>  </td><td>  </td><td>  </td>
+      </tr>
+    <tr>
+      <td>  </td><td>  </td><td>  </td><td>  </td><td>  </td><td>  </td><td>  </td>
+      </tr>
+        
+    </tbody></table>
+	<br>
+	<span id="current">Currently vs. EASY AI</span> <br/>
+	 <input type="button" value="Play with Player"  onclick="toggleMode()" id="hbutton" />
+	 </div>
+
+  </body></html>
